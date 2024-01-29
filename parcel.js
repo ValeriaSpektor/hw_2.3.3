@@ -1,27 +1,35 @@
 let userBalance = 500;
 const parcelCost = 100;
-const smsCode = "A001DFX0";
+const secureSMSCode = "A001DFX0"; // Secure SMS code
 const postBox = [null, null, null, "1432HGF", null];
+let smsCodeEntered = "A001DFX0"; // Code entered by the user
 
-function receiveParcel(code) {
+function receiveParcel() {
+  let codeMatched = false;
+
   for (let i = 0; i < postBox.length; i++) {
-    if (postBox[i] === code) {
+    if (postBox[i] === secureSMSCode) {
+      codeMatched = true;
+
       if (userBalance >= parcelCost) {
         userBalance -= parcelCost;
         postBox[i] = null;
-        console.log(`Retrieve parcel ${code} from cell №${i + 1}. Your balance is: ${userBalance} units.`);
+        console.log(`Retrieve parcel ${secureSMSCode} from cell №${i + 1}. Your balance is: ${userBalance} units.`);
       } else {
-        console.log("Insufficient funds in your account.");
+        console.log("Insufficient funds in your account. Parcel retrieval failed.");
       }
-      return;
+
+      break;
     }
   }
 
-  console.log("Parcel with the specified code not found in the postbox.");
+  if (!codeMatched) {
+    console.log("Parcel with the specified code not found in the postbox.");
+  }
 }
 
-if (smsCode === "1432HGF") {
-  receiveParcel(smsCode);
+if (smsCodeEntered === secureSMSCode) {
+  receiveParcel();
 } else {
-  console.log("The code from the SMS does not match the code in the postbox.");
+  console.log("Invalid SMS code. Parcel retrieval failed.");
 }
